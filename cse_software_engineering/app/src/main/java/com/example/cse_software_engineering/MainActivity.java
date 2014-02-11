@@ -34,6 +34,22 @@ public class MainActivity extends Activity implements GoogleMap.OnMapClickListen
     private Iterator marker;
     private MyService mService;
     private boolean mBound;
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            MyService.LocalBinder binder = (MyService.LocalBinder) service;
+            mService = binder.getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mBound = false;
+        }
+    };
 
 
     @Override
@@ -61,7 +77,7 @@ public class MainActivity extends Activity implements GoogleMap.OnMapClickListen
     @Override
     protected void onDestroy()
     {
-        if (mBound) {
+        if(mBound) {
             unbindService(mConnection);
             mBound = false;
         }
@@ -82,13 +98,17 @@ public class MainActivity extends Activity implements GoogleMap.OnMapClickListen
     }
 
     @Override
-    public void onMapClick(LatLng position) {
-
-        final LatLng pos = position;
-        Intent intent = new Intent(this, MyService.class);//new service is created
+    protected void onStart() {
+        super.onStart();
+        // Bind to LocalService
+        Intent intent = new Intent(MainActivity.this, MyService.class);//new service is created
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+    }
 
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+    @Override
+    public void onMapClick(LatLng position) {
+        final LatLng pos = position;
+        AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
         alert.setTitle("New Place-it");
         alert.setMessage("Please enter a Marker Title:");
         // Set an EditText view to get user input
@@ -130,20 +150,5 @@ public class MainActivity extends Activity implements GoogleMap.OnMapClickListen
     }
 
 
-    private ServiceConnection mConnection = new ServiceConnection() {
 
-        @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            MyService.LocalBinder binder = (MyService.LocalBinder) service;
-            mService = binder.getService();
-            mBound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            mBound = false;
-        }
-    };
 }

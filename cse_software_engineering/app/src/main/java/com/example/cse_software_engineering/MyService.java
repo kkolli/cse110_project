@@ -2,7 +2,9 @@ package com.example.cse_software_engineering;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Binder;
@@ -10,29 +12,32 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
+import java.io.Serializable;
+
 /**
  * Created by Krishna on 2/10/14.
  */
-public class MyService extends Service {
+public class MyService extends Service{
     private final IBinder mBinder = new LocalBinder();
-    private NotificationManager notificationManager = (NotificationManager)
-            getSystemService(NOTIFICATION_SERVICE);
+    private NotificationManager notificationManager;
 
     public class LocalBinder extends Binder {
-        MyService getService() {
+        public MyService getService() {
             // Return this instance of LocalService so clients can call public methods
             return MyService.this;
         }
     }
     @Override
     public IBinder onBind(Intent intent) {
-        return mBinder;
+        //return mBinder;
+        return null;
     }
 
    @Override
    public  void onCreate()
    {
        Toast.makeText(this, "Service Started", Toast.LENGTH_LONG).show();
+       notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
        this.createNotification("Groceries");
    }
 
@@ -40,11 +45,18 @@ public class MyService extends Service {
 
     private void createNotification(String typeofplaceit)
     {
+        Intent intent = new Intent(this, NotificationReceiver.class);
+        PendingIntent pintent =  PendingIntent.getActivity(this, 0, intent, 0);
+
+
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_launcher)
                         .setContentTitle("A place it is nearby!")
-                        .setContentText(typeofplaceit);
+                        .setContentText(typeofplaceit)
+                        .addAction(R.drawable.ic_launcher, "Discard", null)
+                        .addAction(R.drawable.ic_launcher, "Reschedule", pintent);
+
         notificationManager.notify(0, mBuilder.build());
     }
 
@@ -67,5 +79,6 @@ public class MyService extends Service {
    public void onDestroy()
    {
        Toast.makeText(this, "Service Stopped", Toast.LENGTH_LONG).show();
+       stopSelf();
    }
 }
