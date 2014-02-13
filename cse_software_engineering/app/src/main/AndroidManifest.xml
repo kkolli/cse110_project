@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!--
      The following two permissions are not required to use
      Google Maps Android API v2, but are recommended.
@@ -22,8 +23,9 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <service android:name="com.example.cse_software_engineering.MyService"
-        android:permission= "android.permission.BIND_ACCESSIBILITY_SERVICE "/>
+        <service
+            android:name="com.example.cse_software_engineering.MyService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE " />
 
         <activity
             android:name="com.example.cse_software_engineering.MainActivity"
@@ -31,6 +33,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.accessibilityservice.AccessibilityService" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -45,6 +48,10 @@
         <activity
             android:name="com.example.cse_software_engineering.NotificationReceiver"
             android:label="@string/title_activity_notification_reciever" >
+        </activity>
+        <activity
+            android:name="com.example.cse_software_engineering.Discard"
+            android:label="@string/title_activity_discard" >
         </activity>
     </application>
 

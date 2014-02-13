@@ -121,9 +121,8 @@ public class MainActivity extends Activity implements GoogleMap.OnMapClickListen
                 Marker added = mMap.addMarker(new MarkerOptions()
                         .position(pos)
                         .title(value)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher))
-                        .snippet("You can put other info here!"));
-
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.placeit)));
+                MyService.placeits.add(added);
                 mMarkers.add(added);
             }
         });
